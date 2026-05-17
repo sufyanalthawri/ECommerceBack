@@ -17,17 +17,14 @@ public class OrderConcurrencyBenchmark
     private IOrderService _orderService_NoLimit;
     private IOrderService _orderService_WithLimit;
 
-    [Params(5 , 10 ,30 )]
+    [Params(5, 10, 30)]
     public int ConcurrentRequests { get; set; }
 
     [GlobalSetup]
     public void Setup()
     {
-        // سلسلة الاتصال لقاعدة البيانات الأساسية (كما في appsettings.json)
         string connectionString = "Server=(localdb)\\mssqllocaldb;Database=ECommerceDb;Trusted_Connection=True;MultipleActiveResultSets=false";
 
-        // ----- نتحقق من وجود المنتج Id=1 ونعده بقيمة كبيرة -----
-        // نفتح اتصالاً منفصلاً لتجهيز البيانات (دون التأثير على حقن التبعيات)
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         optionsBuilder.UseSqlServer(connectionString);
 
@@ -84,3 +81,4 @@ public class OrderConcurrencyBenchmark
         await Task.WhenAll(tasks);
     }
 }
+

@@ -41,7 +41,7 @@ namespace HangfireTest
                     .ContinueWith(t =>
                     {
                         requestStopwatch.Stop();
-                        lock (individualTimes) // قفل لتجنب مشاكل التزامن عند إضافة القيم
+                        lock (individualTimes) 
                         {
                             individualTimes.Add(requestStopwatch.ElapsedMilliseconds);
                         }

@@ -12,7 +12,6 @@ namespace ECommerceBack.API.Controllers;
 /// وحدة تحكم المنتجات (Products Controller).
 /// توفر نقاط نهاية لعرض وإدارة المنتجات.
 /// يستخدم Cursor Pagination لعرض المنتجات على دفعات لتجنب تحميل كميات كبيرة من البيانات.
-/// يغطي المتطلبات الوظيفية FR4, FR5, FR6, FR7.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]

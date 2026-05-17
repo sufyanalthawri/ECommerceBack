@@ -31,5 +31,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\ECommerceBack.Core\ECommerceBack.Core.csproj" />
 	</ItemGroup>
+	
 
 </Project>

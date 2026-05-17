@@ -11,7 +11,6 @@ namespace ECommerceBack.Infrastructure.Services
     {
         private readonly IServiceScopeFactory _scopeFactory;
 
-        // لم نعد نحتاج إلى IPaymentGateway – سنحاكي الدفع يدوياً
         public OrderService_NoLimit(IServiceScopeFactory scopeFactory)
         {
             _scopeFactory = scopeFactory;
@@ -29,7 +28,6 @@ namespace ECommerceBack.Infrastructure.Services
 
             while (attempt < maxRetries)
             {
-                // ننشئ نطاقاً جديداً لكل محاولة للحصول على DbContext مستقل
                 using var scope = _scopeFactory.CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
@@ -87,7 +85,6 @@ namespace ECommerceBack.Infrastructure.Services
             throw new Exception("Concurrency conflict");
         }
 
-        // التنفيذات الأخرى غير المستخدمة في البنشمارك نتركها رمي استثناء
         public Task<IEnumerable<Order>> GetUserOrdersAsync(int userId) => throw new NotImplementedException();
         public Task<Order?> GetOrderDetailsAsync(int orderId, int userId) => throw new NotImplementedException();
         public Task<Order> CreateOrderFromCartAsync(int userId, PaymentInfo paymentInfo) => throw new NotImplementedException();

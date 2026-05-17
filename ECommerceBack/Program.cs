@@ -83,9 +83,9 @@ builder.Services.AddScoped<PerformanceFilter>();
 
 builder.Services.AddControllers(options =>
 {
-    options.Filters.Add<TransactionFilter>();      // إدارة المعاملات (لـ POST, PUT, DELETE)
-    options.Filters.Add<GlobalExceptionFilter>();  // معالجة الأخطاء العالمية
-    options.Filters.Add<PerformanceFilter>();      // قياس أداء الـ Actions
+    //options.Filters.Add<TransactionFilter>();
+    //options.Filters.Add<GlobalExceptionFilter>(); 
+    options.Filters.Add<PerformanceFilter>();
 });
 
 // ============================================================
@@ -158,6 +158,110 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
 // ============================================================
 // 12. تهيئة قاعدة البيانات وإضافة البيانات التجريبية 
 // ============================================================
+//using (var scope = app.Services.CreateScope())
+//{
+//var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//await dbContext.Database.EnsureCreatedAsync();
+
+//// إضافة مستخدم تجريبي (بدون تحديد Id)
+//if (!await dbContext.Users.AnyAsync(u => u.Email == "test@example.com"))
+//{
+//var testUser = new User
+//{
+//Name = "Test User",
+//Email = "test@example.com",
+//PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"),
+//CreatedAt = DateTime.UtcNow
+//};
+//await dbContext.Users.AddAsync(testUser);
+//await dbContext.SaveChangesAsync();
+//Console.WriteLine($"[Seed] Test user created with Id: {testUser.Id}");
+//}
+//}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//    await dbContext.Database.EnsureCreatedAsync();
+
+//    // ============================================================
+//    // إضافة مستخدم تجريبي (Id = 1) إذا لم يكن موجوداً
+//    // ============================================================
+//    if (!await dbContext.Users.AnyAsync(u => u.Id == 1))
+//{
+//    var testUser = new User
+//    {
+//        Id = 1,
+//        Name = "Test User",
+//        Email = "test@example.com",
+//        PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"),
+//        CreatedAt = DateTime.UtcNow
+//    };
+//    await dbContext.Users.AddAsync(testUser);
+//    await dbContext.SaveChangesAsync();
+//}
+//else
+//{
+//    Console.WriteLine("[Seed] User Id=1 already exists");
+//}
+//}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//    await dbContext.Database.EnsureCreatedAsync();
+
+//    // ============================================================
+//    // إضافة منتجات وهمية (1000 منتج) إذا كان العدد أقل
+//    // ============================================================
+//    const int targetProductCount = 1000;
+//    int currentProductCount = await dbContext.Products.CountAsync();
+
+//    if (currentProductCount < targetProductCount)
+//    {
+//        var random = new Random();
+//        var productsToAdd = new List<Product>();
+
+//        for (int i = currentProductCount + 1; i <= targetProductCount; i++)
+//        {
+//            productsToAdd.Add(new Product
+//            {
+//                Name = $"Dummy Product {i}",
+//                Price = random.Next(10, 1000),
+//                Stock = random.Next(100, 600),
+//                LastUpdated = DateTime.UtcNow
+//            });
+
+//            // حفظ على دفعات كل 200 منتج لتجنب استنزاف الذاكرة
+//            if (productsToAdd.Count >= 200)
+//            {
+//                await dbContext.Products.AddRangeAsync(productsToAdd);
+//                await dbContext.SaveChangesAsync();
+//                productsToAdd.Clear();
+//                Console.WriteLine($"[Seed] Added {i} products so far...");
+//            }
+//        }
+
+//        if (productsToAdd.Any())
+//        {
+//            await dbContext.Products.AddRangeAsync(productsToAdd);
+//            await dbContext.SaveChangesAsync();
+//        }
+
+//        Console.WriteLine($"[Seed] Successfully added {targetProductCount - currentProductCount} dummy products.");
+//    }
+//    else
+//    {
+//        Console.WriteLine($"[Seed] Already have {currentProductCount} products (>= {targetProductCount}), skipping product seeding.");
+//    }
+
+//    // التأكد من أن المنتج Id=1 له مخزون كبير لاختبار الشراء
+//    var testProduct = await dbContext.Products.FindAsync(1);
+//    if (testProduct != null && testProduct.Stock < 200)
+//    {
+//        testProduct.Stock = 200;
+//        await dbContext.SaveChangesAsync();
+//        Console.WriteLine("[Seed] Updated product Id=1 stock to 200 for stress testing.");
+//    }
+//}
 //using (var scope = app.Services.CreateScope())
 //{
 //    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();

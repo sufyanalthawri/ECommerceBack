@@ -1,0 +1,448 @@
+// Validating benchmarks:
+// ***** BenchmarkRunner: Start   *****
+// ***** Found 6 benchmark(s) in total *****
+// ***** Building 1 exe(s) in Parallel: Start   *****
+// start dotnet  restore --nodeReuse:false /p:UseSharedCompilation=false /p:Deterministic=true /p:Optimize=true /p:ArtifactsPath="C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1/" /p:OutDir="C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1\bin\Release\net8.0/" /p:OutputPath="C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1\bin\Release\net8.0/" /p:PublishDir="C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1\publish/" in C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1
+// command took 10.34 sec and exited with 0
+// start dotnet  build -c Release --no-restore --nodeReuse:false /p:UseSharedCompilation=false /p:Deterministic=true /p:Optimize=true /p:ArtifactsPath="C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1/" /p:OutDir="C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1\bin\Release\net8.0/" /p:OutputPath="C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1\bin\Release\net8.0/" /p:PublishDir="C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1\publish/" --output "C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1\bin\Release\net8.0/" in C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1
+// command took 57.99 sec and exited with 0
+// ***** Done, took 00:01:32 (92.2 sec)   *****
+// Found 6 benchmarks:
+//   OrderConcurrencyBenchmark.CreateMultipleOrders_NoLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=5]
+//   OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=5]
+//   OrderConcurrencyBenchmark.CreateMultipleOrders_NoLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=10]
+//   OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=10]
+//   OrderConcurrencyBenchmark.CreateMultipleOrders_NoLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=30]
+//   OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=30]
+
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: أداء عالٍ)
+// **************************
+// Benchmark: OrderConcurrencyBenchmark.CreateMultipleOrders_NoLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=5]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet ECommerceBack.Benchmarks-1.dll --anonymousPipes 2276 1660 --benchmarkName "OrderConcurrencyBenchmark.CreateMultipleOrders_NoLimit(ConcurrentRequests: 5)" --job "Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2" --benchmarkId 0 in C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.8
+// Runtime=.NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX2+BMI1+BMI2+F16C+FMA+LZCNT+MOVBE,AVX,SSE3+SSSE3+SSE4.1+SSE4.2+POPCNT,X86Base+SSE+SSE2,AES+PCLMUL,AvxVnni,SERIALIZE VectorSize=256
+// Job: Job-WRIKEU(IterationCount=5, LaunchCount=1, WarmupCount=2)
+
+OverheadJitting  1: 1 op, 89000.00 ns, 89.0000 us/op
+WorkloadJitting  1: 1 op, 1797056500.00 ns, 1.7971 s/op
+
+OverheadJitting  2: 1 op, 1000.00 ns, 1.0000 us/op
+WorkloadJitting  2: 1 op, 337766500.00 ns, 337.7665 ms/op
+
+WorkloadWarmup   1: 1 op, 328008800.00 ns, 328.0088 ms/op
+WorkloadWarmup   2: 1 op, 340403000.00 ns, 340.4030 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 348829200.00 ns, 348.8292 ms/op
+WorkloadActual   2: 1 op, 554019600.00 ns, 554.0196 ms/op
+WorkloadActual   3: 1 op, 332476800.00 ns, 332.4768 ms/op
+WorkloadActual   4: 1 op, 337218000.00 ns, 337.2180 ms/op
+WorkloadActual   5: 1 op, 337409400.00 ns, 337.4094 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 348829200.00 ns, 348.8292 ms/op
+WorkloadResult   2: 1 op, 332476800.00 ns, 332.4768 ms/op
+WorkloadResult   3: 1 op, 337218000.00 ns, 337.2180 ms/op
+WorkloadResult   4: 1 op, 337409400.00 ns, 337.4094 ms/op
+// GC:  0 0 0 2141992 1
+// Threading:  168 0 1
+// Exceptions:  102
+
+// AfterAll
+// Benchmark Process 40612 has exited with code 0.
+
+Mean = 338.983 ms, StdErr = 3.475 ms (1.02%), N = 4, StdDev = 6.949 ms
+Min = 332.477 ms, Q1 = 336.033 ms, Median = 337.314 ms, Q3 = 340.264 ms, Max = 348.829 ms
+IQR = 4.232 ms, LowerFence = 329.685 ms, UpperFence = 346.612 ms
+ConfidenceInterval = [294.078 ms; 383.888 ms] (CI 99.9%), Margin = 44.905 ms (13.25% of Mean)
+Skewness = 0.5, Kurtosis = 1.2, MValue = 2
+
+// ** Remained 5 (83.3٪؜) benchmark(s) to run. Estimated finish 2026-05-17 13:30 (0h 0m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: أداء عالٍ)
+// **************************
+// Benchmark: OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=5]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet ECommerceBack.Benchmarks-1.dll --anonymousPipes 1636 1584 --benchmarkName "OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit(ConcurrentRequests: 5)" --job "Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2" --benchmarkId 1 in C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.8
+// Runtime=.NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX2+BMI1+BMI2+F16C+FMA+LZCNT+MOVBE,AVX,SSE3+SSSE3+SSE4.1+SSE4.2+POPCNT,X86Base+SSE+SSE2,AES+PCLMUL,AvxVnni,SERIALIZE VectorSize=256
+// Job: Job-WRIKEU(IterationCount=5, LaunchCount=1, WarmupCount=2)
+
+OverheadJitting  1: 1 op, 521600.00 ns, 521.6000 us/op
+WorkloadJitting  1: 1 op, 1483223800.00 ns, 1.4832 s/op
+
+OverheadJitting  2: 1 op, 1500.00 ns, 1.5000 us/op
+WorkloadJitting  2: 1 op, 582879900.00 ns, 582.8799 ms/op
+
+WorkloadWarmup   1: 1 op, 569991400.00 ns, 569.9914 ms/op
+WorkloadWarmup   2: 1 op, 541058400.00 ns, 541.0584 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 560809800.00 ns, 560.8098 ms/op
+WorkloadActual   2: 1 op, 571308600.00 ns, 571.3086 ms/op
+WorkloadActual   3: 1 op, 350767300.00 ns, 350.7673 ms/op
+WorkloadActual   4: 1 op, 548804700.00 ns, 548.8047 ms/op
+WorkloadActual   5: 1 op, 370168400.00 ns, 370.1684 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 560809800.00 ns, 560.8098 ms/op
+WorkloadResult   2: 1 op, 571308600.00 ns, 571.3086 ms/op
+WorkloadResult   3: 1 op, 350767300.00 ns, 350.7673 ms/op
+WorkloadResult   4: 1 op, 548804700.00 ns, 548.8047 ms/op
+WorkloadResult   5: 1 op, 370168400.00 ns, 370.1684 ms/op
+// GC:  0 0 0 2848216 1
+// Threading:  220 0 1
+// Exceptions:  170
+
+// AfterAll
+// Benchmark Process 34852 has exited with code 0.
+
+Mean = 480.372 ms, StdErr = 49.176 ms (10.24%), N = 5, StdDev = 109.960 ms
+Min = 350.767 ms, Q1 = 370.168 ms, Median = 548.805 ms, Q3 = 560.810 ms, Max = 571.309 ms
+IQR = 190.641 ms, LowerFence = 84.206 ms, UpperFence = 846.772 ms
+ConfidenceInterval = [56.954 ms; 903.789 ms] (CI 99.9%), Margin = 423.417 ms (88.14% of Mean)
+Skewness = -0.29, Kurtosis = 0.77, MValue = 2
+
+// ** Remained 4 (66.7٪؜) benchmark(s) to run. Estimated finish 2026-05-17 13:30 (0h 0m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: أداء عالٍ)
+// **************************
+// Benchmark: OrderConcurrencyBenchmark.CreateMultipleOrders_NoLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=10]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet ECommerceBack.Benchmarks-1.dll --anonymousPipes 1620 1244 --benchmarkName "OrderConcurrencyBenchmark.CreateMultipleOrders_NoLimit(ConcurrentRequests: 10)" --job "Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2" --benchmarkId 2 in C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.8
+// Runtime=.NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX2+BMI1+BMI2+F16C+FMA+LZCNT+MOVBE,AVX,SSE3+SSSE3+SSE4.1+SSE4.2+POPCNT,X86Base+SSE+SSE2,AES+PCLMUL,AvxVnni,SERIALIZE VectorSize=256
+// Job: Job-WRIKEU(IterationCount=5, LaunchCount=1, WarmupCount=2)
+
+OverheadJitting  1: 1 op, 91900.00 ns, 91.9000 us/op
+WorkloadJitting  1: 1 op, 3763365100.00 ns, 3.7634 s/op
+
+OverheadJitting  2: 1 op, 2000.00 ns, 2.0000 us/op
+WorkloadJitting  2: 1 op, 1937572300.00 ns, 1.9376 s/op
+
+WorkloadWarmup   1: 1 op, 1931986300.00 ns, 1.9320 s/op
+WorkloadWarmup   2: 1 op, 2331503600.00 ns, 2.3315 s/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 2368445000.00 ns, 2.3684 s/op
+WorkloadActual   2: 1 op, 1163682900.00 ns, 1.1637 s/op
+WorkloadActual   3: 1 op, 2366705600.00 ns, 2.3667 s/op
+WorkloadActual   4: 1 op, 1472706100.00 ns, 1.4727 s/op
+WorkloadActual   5: 1 op, 1474946000.00 ns, 1.4749 s/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 2368445000.00 ns, 2.3684 s/op
+WorkloadResult   2: 1 op, 1163682900.00 ns, 1.1637 s/op
+WorkloadResult   3: 1 op, 2366705600.00 ns, 2.3667 s/op
+WorkloadResult   4: 1 op, 1472706100.00 ns, 1.4727 s/op
+WorkloadResult   5: 1 op, 1474946000.00 ns, 1.4749 s/op
+// GC:  1 0 0 7022888 1
+// Threading:  544 0 1
+// Exceptions:  476
+
+// AfterAll
+// Benchmark Process 19628 has exited with code 0.
+
+Mean = 1.769 s, StdErr = 0.251 s (14.17%), N = 5, StdDev = 0.561 s
+Min = 1.164 s, Q1 = 1.473 s, Median = 1.475 s, Q3 = 2.367 s, Max = 2.368 s
+IQR = 0.894 s, LowerFence = 0.132 s, UpperFence = 3.708 s
+ConfidenceInterval = [-0.390 s; 3.928 s] (CI 99.9%), Margin = 2.159 s (122.02% of Mean)
+Skewness = 0.18, Kurtosis = 0.82, MValue = 2
+
+// ** Remained 3 (50.0٪؜) benchmark(s) to run. Estimated finish 2026-05-17 13:31 (0h 0m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: أداء عالٍ)
+// **************************
+// Benchmark: OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=10]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet ECommerceBack.Benchmarks-1.dll --anonymousPipes 1240 2184 --benchmarkName "OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit(ConcurrentRequests: 10)" --job "Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2" --benchmarkId 3 in C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.8
+// Runtime=.NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX2+BMI1+BMI2+F16C+FMA+LZCNT+MOVBE,AVX,SSE3+SSSE3+SSE4.1+SSE4.2+POPCNT,X86Base+SSE+SSE2,AES+PCLMUL,AvxVnni,SERIALIZE VectorSize=256
+// Job: Job-WRIKEU(IterationCount=5, LaunchCount=1, WarmupCount=2)
+
+OverheadJitting  1: 1 op, 78400.00 ns, 78.4000 us/op
+WorkloadJitting  1: 1 op, 3351635800.00 ns, 3.3516 s/op
+
+OverheadJitting  2: 1 op, 3600.00 ns, 3.6000 us/op
+WorkloadJitting  2: 1 op, 1512574500.00 ns, 1.5126 s/op
+
+WorkloadWarmup   1: 1 op, 1945151400.00 ns, 1.9452 s/op
+WorkloadWarmup   2: 1 op, 1118106500.00 ns, 1.1181 s/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 2363771100.00 ns, 2.3638 s/op
+WorkloadActual   2: 1 op, 2373716100.00 ns, 2.3737 s/op
+WorkloadActual   3: 1 op, 2367613100.00 ns, 2.3676 s/op
+WorkloadActual   4: 1 op, 1899634600.00 ns, 1.8996 s/op
+WorkloadActual   5: 1 op, 1117438000.00 ns, 1.1174 s/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 2363771100.00 ns, 2.3638 s/op
+WorkloadResult   2: 1 op, 2373716100.00 ns, 2.3737 s/op
+WorkloadResult   3: 1 op, 2367613100.00 ns, 2.3676 s/op
+WorkloadResult   4: 1 op, 1899634600.00 ns, 1.8996 s/op
+WorkloadResult   5: 1 op, 1117438000.00 ns, 1.1174 s/op
+// GC:  1 0 0 7898728 1
+// Threading:  609 0 1
+// Exceptions:  561
+
+// AfterAll
+// Benchmark Process 17872 has exited with code 0.
+
+Mean = 2.024 s, StdErr = 0.244 s (12.06%), N = 5, StdDev = 0.546 s
+Min = 1.117 s, Q1 = 1.900 s, Median = 2.364 s, Q3 = 2.368 s, Max = 2.374 s
+IQR = 0.468 s, LowerFence = 1.198 s, UpperFence = 3.070 s
+ConfidenceInterval = [-0.079 s; 4.127 s] (CI 99.9%), Margin = 2.103 s (103.88% of Mean)
+Skewness = -0.77, Kurtosis = 1.62, MValue = 2
+
+// ** Remained 2 (33.3٪؜) benchmark(s) to run. Estimated finish 2026-05-17 13:31 (0h 0m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: أداء عالٍ)
+// **************************
+// Benchmark: OrderConcurrencyBenchmark.CreateMultipleOrders_NoLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=30]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet ECommerceBack.Benchmarks-1.dll --anonymousPipes 1760 2248 --benchmarkName "OrderConcurrencyBenchmark.CreateMultipleOrders_NoLimit(ConcurrentRequests: 30)" --job "Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2" --benchmarkId 4 in C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.8
+// Runtime=.NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX2+BMI1+BMI2+F16C+FMA+LZCNT+MOVBE,AVX,SSE3+SSSE3+SSE4.1+SSE4.2+POPCNT,X86Base+SSE+SSE2,AES+PCLMUL,AvxVnni,SERIALIZE VectorSize=256
+// Job: Job-WRIKEU(IterationCount=5, LaunchCount=1, WarmupCount=2)
+
+OverheadJitting  1: 1 op, 79700.00 ns, 79.7000 us/op
+WorkloadJitting  1: 1 op, 21922970100.00 ns, 21.9230 s/op
+
+WorkloadWarmup   1: 1 op, 13009131100.00 ns, 13.0091 s/op
+WorkloadWarmup   2: 1 op, 9811180100.00 ns, 9.8112 s/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 16719618300.00 ns, 16.7196 s/op
+WorkloadActual   2: 1 op, 7017194500.00 ns, 7.0172 s/op
+WorkloadActual   3: 1 op, 16643945800.00 ns, 16.6439 s/op
+WorkloadActual   4: 1 op, 8847222300.00 ns, 8.8472 s/op
+WorkloadActual   5: 1 op, 10770105100.00 ns, 10.7701 s/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 16719618300.00 ns, 16.7196 s/op
+WorkloadResult   2: 1 op, 7017194500.00 ns, 7.0172 s/op
+WorkloadResult   3: 1 op, 16643945800.00 ns, 16.6439 s/op
+WorkloadResult   4: 1 op, 8847222300.00 ns, 8.8472 s/op
+WorkloadResult   5: 1 op, 10770105100.00 ns, 10.7701 s/op
+// GC:  9 6 0 54699288 1
+// Threading:  4130 2 1
+// Exceptions:  4692
+
+// AfterAll
+// Benchmark Process 33256 has exited with code 0.
+
+Mean = 12.000 s, StdErr = 2.002 s (16.68%), N = 5, StdDev = 4.476 s
+Min = 7.017 s, Q1 = 8.847 s, Median = 10.770 s, Q3 = 16.644 s, Max = 16.720 s
+IQR = 7.797 s, LowerFence = -2.848 s, UpperFence = 28.339 s
+ConfidenceInterval = [-5.234 s; 29.233 s] (CI 99.9%), Margin = 17.234 s (143.62% of Mean)
+Skewness = 0.11, Kurtosis = 0.84, MValue = 2
+
+// ** Remained 1 (16.7٪؜) benchmark(s) to run. Estimated finish 2026-05-17 13:33 (0h 0m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: أداء عالٍ)
+// **************************
+// Benchmark: OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=30]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet ECommerceBack.Benchmarks-1.dll --anonymousPipes 2312 908 --benchmarkName "OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit(ConcurrentRequests: 30)" --job "Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2" --benchmarkId 5 in C:\Users\meryem\source\repos\ECommerceBack\ECommerceBack.Benchmarks\bin\Release\net8.0\ECommerceBack.Benchmarks-1\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.8
+// Runtime=.NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX2+BMI1+BMI2+F16C+FMA+LZCNT+MOVBE,AVX,SSE3+SSSE3+SSE4.1+SSE4.2+POPCNT,X86Base+SSE+SSE2,AES+PCLMUL,AvxVnni,SERIALIZE VectorSize=256
+// Job: Job-WRIKEU(IterationCount=5, LaunchCount=1, WarmupCount=2)
+
+OverheadJitting  1: 1 op, 94000.00 ns, 94.0000 us/op
+WorkloadJitting  1: 1 op, 3909740700.00 ns, 3.9097 s/op
+
+OverheadJitting  2: 1 op, 900.00 ns, 900.0000 ns/op
+WorkloadJitting  2: 1 op, 2398428900.00 ns, 2.3984 s/op
+
+WorkloadWarmup   1: 1 op, 2878854600.00 ns, 2.8789 s/op
+WorkloadWarmup   2: 1 op, 2866948600.00 ns, 2.8669 s/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 2374884000.00 ns, 2.3749 s/op
+WorkloadActual   2: 1 op, 2384920600.00 ns, 2.3849 s/op
+WorkloadActual   3: 1 op, 2377777400.00 ns, 2.3778 s/op
+WorkloadActual   4: 1 op, 2364561100.00 ns, 2.3646 s/op
+WorkloadActual   5: 1 op, 2374515600.00 ns, 2.3745 s/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 2374884000.00 ns, 2.3749 s/op
+WorkloadResult   2: 1 op, 2377777400.00 ns, 2.3778 s/op
+WorkloadResult   3: 1 op, 2364561100.00 ns, 2.3646 s/op
+WorkloadResult   4: 1 op, 2374515600.00 ns, 2.3745 s/op
+// GC:  2 1 0 14085248 1
+// Threading:  1143 0 1
+// Exceptions:  765
+
+// AfterAll
+// Benchmark Process 29832 has exited with code 0.
+
+Mean = 2.373 s, StdErr = 0.003 s (0.12%), N = 4, StdDev = 0.006 s
+Min = 2.365 s, Q1 = 2.372 s, Median = 2.375 s, Q3 = 2.376 s, Max = 2.378 s
+IQR = 0.004 s, LowerFence = 2.367 s, UpperFence = 2.381 s
+ConfidenceInterval = [2.336 s; 2.410 s] (CI 99.9%), Margin = 0.037 s (1.57% of Mean)
+Skewness = -0.6, Kurtosis = 1.24, MValue = 2
+
+// ** Remained 0 (0.0٪؜) benchmark(s) to run. Estimated finish 2026-05-17 13:33 (0h 0m from now) **
+Successfully reverted power plan (GUID: 381b4222-f694-41f0-9685-ff5bb260df2e FriendlyName: متوازن)
+// ***** BenchmarkRunner: Finish  *****
+
+// * Export *
+  BenchmarkDotNet.Artifacts\results\OrderConcurrencyBenchmark-report.csv
+  BenchmarkDotNet.Artifacts\results\OrderConcurrencyBenchmark-report-github.md
+  BenchmarkDotNet.Artifacts\results\OrderConcurrencyBenchmark-report.html
+
+// * Detailed results *
+OrderConcurrencyBenchmark.CreateMultipleOrders_NoLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=5]
+Runtime = .NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3; GC = Concurrent Workstation
+Mean = 338.983 ms, StdErr = 3.475 ms (1.02%), N = 4, StdDev = 6.949 ms
+Min = 332.477 ms, Q1 = 336.033 ms, Median = 337.314 ms, Q3 = 340.264 ms, Max = 348.829 ms
+IQR = 4.232 ms, LowerFence = 329.685 ms, UpperFence = 346.612 ms
+ConfidenceInterval = [294.078 ms; 383.888 ms] (CI 99.9%), Margin = 44.905 ms (13.25% of Mean)
+Skewness = 0.5, Kurtosis = 1.2, MValue = 2
+-------------------- Histogram --------------------
+[329.197 ms ; 340.689 ms) | @@@
+[340.689 ms ; 354.575 ms) | @
+---------------------------------------------------
+
+OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=5]
+Runtime = .NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3; GC = Concurrent Workstation
+Mean = 480.372 ms, StdErr = 49.176 ms (10.24%), N = 5, StdDev = 109.960 ms
+Min = 350.767 ms, Q1 = 370.168 ms, Median = 548.805 ms, Q3 = 560.810 ms, Max = 571.309 ms
+IQR = 190.641 ms, LowerFence = 84.206 ms, UpperFence = 846.772 ms
+ConfidenceInterval = [56.954 ms; 903.789 ms] (CI 99.9%), Margin = 423.417 ms (88.14% of Mean)
+Skewness = -0.29, Kurtosis = 0.77, MValue = 2
+-------------------- Histogram --------------------
+[266.367 ms ; 475.656 ms) | @@
+[475.656 ms ; 655.709 ms) | @@@
+---------------------------------------------------
+
+OrderConcurrencyBenchmark.CreateMultipleOrders_NoLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=10]
+Runtime = .NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3; GC = Concurrent Workstation
+Mean = 1.769 s, StdErr = 0.251 s (14.17%), N = 5, StdDev = 0.561 s
+Min = 1.164 s, Q1 = 1.473 s, Median = 1.475 s, Q3 = 2.367 s, Max = 2.368 s
+IQR = 0.894 s, LowerFence = 0.132 s, UpperFence = 3.708 s
+ConfidenceInterval = [-0.390 s; 3.928 s] (CI 99.9%), Margin = 2.159 s (122.02% of Mean)
+Skewness = 0.18, Kurtosis = 0.82, MValue = 2
+-------------------- Histogram --------------------
+[0.889 s ; 1.937 s) | @@@
+[1.937 s ; 2.799 s) | @@
+---------------------------------------------------
+
+OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=10]
+Runtime = .NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3; GC = Concurrent Workstation
+Mean = 2.024 s, StdErr = 0.244 s (12.06%), N = 5, StdDev = 0.546 s
+Min = 1.117 s, Q1 = 1.900 s, Median = 2.364 s, Q3 = 2.368 s, Max = 2.374 s
+IQR = 0.468 s, LowerFence = 1.198 s, UpperFence = 3.070 s
+ConfidenceInterval = [-0.079 s; 4.127 s] (CI 99.9%), Margin = 2.103 s (103.88% of Mean)
+Skewness = -0.77, Kurtosis = 1.62, MValue = 2
+-------------------- Histogram --------------------
+[0.698 s ; 1.717 s) | @
+[1.717 s ; 2.556 s) | @@@@
+---------------------------------------------------
+
+OrderConcurrencyBenchmark.CreateMultipleOrders_NoLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=30]
+Runtime = .NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3; GC = Concurrent Workstation
+Mean = 12.000 s, StdErr = 2.002 s (16.68%), N = 5, StdDev = 4.476 s
+Min = 7.017 s, Q1 = 8.847 s, Median = 10.770 s, Q3 = 16.644 s, Max = 16.720 s
+IQR = 7.797 s, LowerFence = -2.848 s, UpperFence = 28.339 s
+ConfidenceInterval = [-5.234 s; 29.233 s] (CI 99.9%), Margin = 17.234 s (143.62% of Mean)
+Skewness = 0.11, Kurtosis = 0.84, MValue = 2
+-------------------- Histogram --------------------
+[ 5.458 s ; 12.329 s) | @@@
+[12.329 s ; 20.155 s) | @@
+---------------------------------------------------
+
+OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit: Job-ZYKMEL(Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2) [ConcurrentRequests=30]
+Runtime = .NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3; GC = Concurrent Workstation
+Mean = 2.373 s, StdErr = 0.003 s (0.12%), N = 4, StdDev = 0.006 s
+Min = 2.365 s, Q1 = 2.372 s, Median = 2.375 s, Q3 = 2.376 s, Max = 2.378 s
+IQR = 0.004 s, LowerFence = 2.367 s, UpperFence = 2.381 s
+ConfidenceInterval = [2.336 s; 2.410 s] (CI 99.9%), Margin = 0.037 s (1.57% of Mean)
+Skewness = -0.6, Kurtosis = 1.24, MValue = 2
+-------------------- Histogram --------------------
+[2.360 s ; 2.383 s) | @@@@
+---------------------------------------------------
+
+// * Summary *
+
+BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.8457/25H2/2025Update/HudsonValley2)
+13th Gen Intel Core i5-13420H 2.10GHz, 1 CPU, 12 logical and 8 physical cores
+.NET SDK 9.0.102
+  [Host]     : .NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3
+  Job-ZYKMEL : .NET 8.0.12 (8.0.12, 8.0.1224.60305), X64 RyuJIT x86-64-v3
+
+Runtime=.NET 8.0  IterationCount=5  LaunchCount=1  
+WarmupCount=2  
+
+| Method                         | ConcurrentRequests | Mean        | Error        | StdDev      | Ratio | RatioSD | Gen0      | Gen1      | Allocated | Alloc Ratio |
+|------------------------------- |------------------- |------------:|-------------:|------------:|------:|--------:|----------:|----------:|----------:|------------:|
+| CreateMultipleOrders_NoLimit   | 5                  |    339.0 ms |     44.90 ms |     6.95 ms |  1.00 |    0.03 |         - |         - |   2.04 MB |        1.00 |
+| CreateMultipleOrders_WithLimit | 5                  |    480.4 ms |    423.42 ms |   109.96 ms |  1.42 |    0.30 |         - |         - |   2.72 MB |        1.33 |
+|                                |                    |             |              |             |       |         |           |           |           |             |
+| CreateMultipleOrders_NoLimit   | 10                 |  1,769.3 ms |  2,158.81 ms |   560.64 ms |  1.08 |    0.45 | 1000.0000 |         - |    6.7 MB |        1.00 |
+| CreateMultipleOrders_WithLimit | 10                 |  2,024.4 ms |  2,103.04 ms |   546.15 ms |  1.24 |    0.47 | 1000.0000 |         - |   7.53 MB |        1.12 |
+|                                |                    |             |              |             |       |         |           |           |           |             |
+| CreateMultipleOrders_NoLimit   | 30                 | 11,999.6 ms | 17,233.73 ms | 4,475.55 ms |  1.12 |    0.56 | 9000.0000 | 6000.0000 |  52.17 MB |        1.00 |
+| CreateMultipleOrders_WithLimit | 30                 |  2,372.9 ms |     37.28 ms |     5.77 ms |  0.22 |    0.08 | 2000.0000 | 1000.0000 |  13.43 MB |        0.26 |
+
+// * Hints *
+Outliers
+  OrderConcurrencyBenchmark.CreateMultipleOrders_NoLimit: Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2   -> 1 outlier  was  removed (554.02 ms)
+  OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit: Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2 -> 1 outlier  was  detected (1.12 s)
+  OrderConcurrencyBenchmark.CreateMultipleOrders_WithLimit: Runtime=.NET 8.0, IterationCount=5, LaunchCount=1, WarmupCount=2 -> 1 outlier  was  removed, 2 outliers were detected (2.36 s, 2.38 s)
+
+// * Legends *
+  ConcurrentRequests : Value of the 'ConcurrentRequests' parameter
+  Mean               : Arithmetic mean of all measurements
+  Error              : Half of 99.9% confidence interval
+  StdDev             : Standard deviation of all measurements
+  Ratio              : Mean of the ratio distribution ([Current]/[Baseline])
+  RatioSD            : Standard deviation of the ratio distribution ([Current]/[Baseline])
+  Gen0               : GC Generation 0 collects per 1000 operations
+  Gen1               : GC Generation 1 collects per 1000 operations
+  Allocated          : Allocated memory per single operation (managed only, inclusive, 1KB = 1024B)
+  Alloc Ratio        : Allocated memory ratio distribution ([Current]/[Baseline])
+  1 ms               : 1 Millisecond (0.001 sec)
+
+// * Diagnostic Output - MemoryDiagnoser *
+
+
+// ***** BenchmarkRunner: End *****
+Run time: 00:03:22 (202.98 sec), executed benchmarks: 6
+
+Global total time: 00:05:05 (305.27 sec), executed benchmarks: 6
+// * Artifacts cleanup *
+Artifacts cleanup is finished

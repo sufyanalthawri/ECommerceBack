@@ -20,7 +20,7 @@ namespace ECommerceBack.Infrastructure.Services
         /// <returns>كائن PaymentResult يحتوي على نتيجة الدفع (نجاح/فشل)، معرف المعاملة، ورسالة.</returns>
         public async Task<PaymentResult> ProcessPaymentAsync(decimal amount, string cardNumber)
         {
-            await Task.Delay(_random.Next(200, 500));
+            await Task.Delay(_random.Next(200,500));
             bool success = _random.NextDouble() < 0.9; // 90% success
 
             return new PaymentResult

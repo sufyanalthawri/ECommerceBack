@@ -10,6 +10,8 @@ namespace ECommerceBack.Infrastructure.Services
     /// تطبيق نمط Façade (واجهة مبسطة) لعملية الشراء الكاملة.
     /// يجمع استدعاءات السلة، إنشاء الطلب، جدولة المهام الخلفية، وتفريغ السلة في خطوة واحدة.
     /// </summary>
+    /// 
+
     public class CheckoutFacade : ICheckoutFacade
     {
         private readonly ICartService _cartService;
