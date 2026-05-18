@@ -10,13 +10,13 @@ Runtime=.NET 8.0  IterationCount=5  LaunchCount=1
 WarmupCount=2  
 
 ```
-| Method                         | ConcurrentRequests | Mean        | Error        | StdDev      | Ratio | RatioSD | Gen0      | Gen1      | Allocated | Alloc Ratio |
-|------------------------------- |------------------- |------------:|-------------:|------------:|------:|--------:|----------:|----------:|----------:|------------:|
-| **CreateMultipleOrders_NoLimit**   | **5**                  |    **339.0 ms** |     **44.90 ms** |     **6.95 ms** |  **1.00** |    **0.03** |         **-** |         **-** |   **2.04 MB** |        **1.00** |
-| CreateMultipleOrders_WithLimit | 5                  |    480.4 ms |    423.42 ms |   109.96 ms |  1.42 |    0.30 |         - |         - |   2.72 MB |        1.33 |
-|                                |                    |             |              |             |       |         |           |           |           |             |
-| **CreateMultipleOrders_NoLimit**   | **10**                 |  **1,769.3 ms** |  **2,158.81 ms** |   **560.64 ms** |  **1.08** |    **0.45** | **1000.0000** |         **-** |    **6.7 MB** |        **1.00** |
-| CreateMultipleOrders_WithLimit | 10                 |  2,024.4 ms |  2,103.04 ms |   546.15 ms |  1.24 |    0.47 | 1000.0000 |         - |   7.53 MB |        1.12 |
-|                                |                    |             |              |             |       |         |           |           |           |             |
-| **CreateMultipleOrders_NoLimit**   | **30**                 | **11,999.6 ms** | **17,233.73 ms** | **4,475.55 ms** |  **1.12** |    **0.56** | **9000.0000** | **6000.0000** |  **52.17 MB** |        **1.00** |
-| CreateMultipleOrders_WithLimit | 30                 |  2,372.9 ms |     37.28 ms |     5.77 ms |  0.22 |    0.08 | 2000.0000 | 1000.0000 |  13.43 MB |        0.26 |
+| Method                         | ConcurrentRequests | Mean        | Error       | StdDev     | Median      | Ratio | RatioSD | Gen0      | Gen1      | Allocated | Alloc Ratio |
+|------------------------------- |------------------- |------------:|------------:|-----------:|------------:|------:|--------:|----------:|----------:|----------:|------------:|
+| **CreateMultipleOrders_NoLimit**   | **5**                  |    **422.9 ms** |    **459.3 ms** |   **119.3 ms** |    **337.5 ms** |  **1.06** |    **0.37** |         **-** |         **-** |   **2.04 MB** |        **1.00** |
+| CreateMultipleOrders_WithLimit | 5                  |    423.8 ms |    460.1 ms |   119.5 ms |    337.2 ms |  1.06 |    0.37 |         - |         - |   2.04 MB |        1.00 |
+|                                |                    |             |             |            |             |       |         |           |           |           |             |
+| **CreateMultipleOrders_NoLimit**   | **10**                 |  **1,703.3 ms** |  **1,904.9 ms** |   **494.7 ms** |  **1,521.3 ms** |  **1.07** |    **0.40** |         **-** |         **-** |   **5.52 MB** |        **1.00** |
+| CreateMultipleOrders_WithLimit | 10                 |  1,756.8 ms |    831.5 ms |   215.9 ms |  1,898.5 ms |  1.10 |    0.31 | 1000.0000 |         - |   8.04 MB |        1.46 |
+|                                |                    |             |             |            |             |       |         |           |           |           |             |
+| **CreateMultipleOrders_NoLimit**   | **30**                 | **12,469.5 ms** | **15,974.5 ms** | **4,148.5 ms** | **10,975.1 ms** |  **1.09** |    **0.46** | **5000.0000** | **3000.0000** |  **29.49 MB** |        **1.00** |
+| CreateMultipleOrders_WithLimit | 30                 |  2,614.8 ms |  1,165.7 ms |   302.7 ms |  2,405.2 ms |  0.23 |    0.07 | 2000.0000 | 1000.0000 |  13.44 MB |        0.46 |

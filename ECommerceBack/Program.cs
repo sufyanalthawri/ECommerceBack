@@ -67,6 +67,8 @@ builder.Services.AddScoped<ICheckoutFacade, CheckoutFacade>();
 // ============================================================
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.Decorate<IOrderService, OrderServiceLoggingDecorator>();
+builder.Services.Decorate<IOrderService, RetryDecorator>();
+
 
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.Decorate<ICartService, CartServiceLoggingDecorator>();

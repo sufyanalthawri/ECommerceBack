@@ -16,7 +16,7 @@ namespace ECommerceBack.Infrastructure.Decorators
     {
         private readonly IOrderService _inner;
         private readonly ILogger<RetryDecorator> _logger;
-        private const int MaxRetries = 3;
+        private const int MaxRetries = 10;
 
         public RetryDecorator(IOrderService inner, ILogger<RetryDecorator> logger)
         {
@@ -25,7 +25,7 @@ namespace ECommerceBack.Infrastructure.Decorators
         }
 
         /// <summary>
-        /// إنشاء طلب مباشر مع إعادة محاولة تصل إلى 3 مرات عند حدوث DbUpdateConcurrencyException.
+        /// إنشاء طلب مباشر مع إعادة محاولة تصل إلى  مرات عند حدوث DbUpdateConcurrencyException.
         /// </summary>
         /// <param name="userId">معرف المستخدم.</param>
         /// <param name="productId">معرف المنتج.</param>
@@ -59,24 +59,6 @@ namespace ECommerceBack.Infrastructure.Decorators
         /// <param name="paymentInfo">معلومات الدفع (رقم البطاقة).</param>
         /// <returns>كائن Order الذي تم إنشاؤه.</returns>
         /// <exception cref="InvalidOperationException">عند تجاوز الحد الأقصى للمحاولات.</exception>
-        public async Task<Order> CreateOrderFromCartAsync(int userId, PaymentInfo paymentInfo)
-        {
-            int attempt = 0;
-            while (attempt < MaxRetries)
-            {
-                try
-                {
-                    return await _inner.CreateOrderFromCartAsync(userId, paymentInfo);
-                }
-                catch (DbUpdateConcurrencyException ex) when (attempt < MaxRetries - 1)
-                {
-                    attempt++;
-                    _logger.LogWarning(ex, "⚠️ Retry {Attempt}/{MaxRetries} for CreateOrderFromCartAsync (User {UserId})", attempt, MaxRetries, userId);
-                    await Task.Delay(50 * attempt);
-                }
-            }
-            throw new InvalidOperationException("Max retries exceeded for CreateOrderFromCartAsync");
-        }
 
         /// <summary>عمليات القراءة لا تحتاج إلى إعادة محاولة.</summary>
         public async Task<IEnumerable<Order>> GetUserOrdersAsync(int userId)

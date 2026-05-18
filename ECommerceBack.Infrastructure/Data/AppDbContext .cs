@@ -9,7 +9,6 @@ namespace ECommerceBack.Infrastructure.Data
     /// </summary>
     public class AppDbContext : DbContext
     {
-        // المُنشئ الوحيد – يتوقع DbContextOptions (يتم حقنه في Runtime)
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<User> Users => Set<User>();

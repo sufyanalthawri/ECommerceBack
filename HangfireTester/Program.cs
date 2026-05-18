@@ -15,10 +15,7 @@ namespace HangfireTest
     /// </summary>
     internal class Program
     {
-        /// <summary>
-        /// نقطة الدخول الرئيسية للبرنامج.
-        /// </summary>
-        /// <param name="args">معاملات سطر الأوامر (غير مستخدمة).</param>
+      
         static async Task Main(string[] args)
         {
             Console.WriteLine("=== Testing Asynchronous Processing (Hangfire) ===");
@@ -57,8 +54,7 @@ namespace HangfireTest
             int failCount = responses.Count(r => !r.IsSuccessStatusCode);
 
             Console.WriteLine($"\n Results:");
-            Console.WriteLine($" Success: {successCount}");
-            Console.WriteLine($" Failure: {failCount}");
+     
             Console.WriteLine($" Total elapsed time: {swTotal.ElapsedMilliseconds} ms");
             Console.WriteLine($" Average response time: {(individualTimes.Count > 0 ? individualTimes.Average() : 0):F0} ms");
             Console.WriteLine($" Fastest request: {(individualTimes.Count > 0 ? individualTimes.Min() : 0)} ms");
@@ -69,7 +65,6 @@ namespace HangfireTest
         private static HttpClient CreateHttpClient()
         {
             var handler = new HttpClientHandler();
-            // تجاهل أخطاء شهادة SSL في بيئة التطوير المحلية فقط
             handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
             return new HttpClient(handler);
         }

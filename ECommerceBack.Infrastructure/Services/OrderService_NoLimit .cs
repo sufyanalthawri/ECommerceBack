@@ -87,6 +87,6 @@ namespace ECommerceBack.Infrastructure.Services
 
         public Task<IEnumerable<Order>> GetUserOrdersAsync(int userId) => throw new NotImplementedException();
         public Task<Order?> GetOrderDetailsAsync(int orderId, int userId) => throw new NotImplementedException();
-        public Task<Order> CreateOrderFromCartAsync(int userId, PaymentInfo paymentInfo) => throw new NotImplementedException();
+        //public Task<Order> CreateOrderFromCartAsync(int userId, PaymentInfo paymentInfo) => throw new NotImplementedException();
     }
 }

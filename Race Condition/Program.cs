@@ -10,13 +10,13 @@ handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPol
 client = new HttpClient(handler);
 
 var tasks = new List<Task<HttpResponseMessage>>();
-for (int i = 0; i < 11; i++)
+for (int i = 0; i < 10; i++)
 {
-    var requestBody = new { productId = 1, quantity = 1, cardNumber = "4111111111111111" };
+    var requestBody = new { productId = 1, quantity = 1, cardNumber = "41111111" };
     tasks.Add(client.PostAsJsonAsync($"{baseUrl}/api/orders/checkout", requestBody));
 }
 
-Console.WriteLine("Sending 20 concurrent requests...");
+Console.WriteLine("Sending 10 concurrent requests...");
 var responses = await Task.WhenAll(tasks);
 
 int success = responses.Count(r => r.IsSuccessStatusCode);
@@ -28,7 +28,6 @@ Console.WriteLine($"Success (200): {success}");
 Console.WriteLine($"BadRequest (400): {badRequest}");
 Console.WriteLine($"Conflict (409): {conflict}");
 Console.WriteLine($"Other errors: {other}");
-Console.WriteLine("Expected: 5 success, 15 BadRequest (Insufficient stock)");
 
 foreach (var resp in responses.Where(r => !r.IsSuccessStatusCode).Take(3))
 {

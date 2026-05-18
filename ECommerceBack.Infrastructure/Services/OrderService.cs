@@ -20,6 +20,9 @@ namespace ECommerceBack.Infrastructure.Services
         private readonly AppDbContext _context;
         private readonly ILogger<OrderService> _logger;
         private readonly IConcurrencyManager _concurrencyManager;
+
+
+
         public OrderService(
             IOrderRepository orderRepository,
             ICartRepository cartRepository,
@@ -28,6 +31,7 @@ namespace ECommerceBack.Infrastructure.Services
             IPaymentTransactionRepository paymentTransactionRepository,
             IBackgroundJobService backgroundJobService,
             AppDbContext context,
+
             IConcurrencyManager concurrencyManager,
             ILogger<OrderService> logger)
         {
@@ -38,6 +42,8 @@ namespace ECommerceBack.Infrastructure.Services
             _paymentTransactionRepository = paymentTransactionRepository;
             _backgroundJobService = backgroundJobService;
             _context = context;
+            _paymentGateway = paymentGateway;
+
             _logger = logger;
             _concurrencyManager = concurrencyManager;
 
@@ -45,216 +51,97 @@ namespace ECommerceBack.Infrastructure.Services
         }
         public async Task<Order> CreateOrderDirectAsync(int userId, int productId, int quantity, string cardNumber)
         {
-            if (quantity <= 0)
-                throw new InvalidOperationException("Quantity must be positive.");
-
-            const int maxRetries = 9;  
-            int attempt = 0;
-
-            while (attempt < maxRetries)
-            {
-                await using var transaction = await _context.Database.BeginTransactionAsync();
-                try
-                {
-                    // جلب المنتج (سيتم تتبعه بواسطة ChangeTracker)
-                    var product = await _context.Products.FindAsync(productId);
-                    if (product == null)
-                        throw new InvalidOperationException("Product not found.");
-
-                    _logger.LogInformation($"Attempt {attempt + 1}: Stock={product.Stock}, RowVersion={Convert.ToBase64String(product.RowVersion ?? Array.Empty<byte>())}");
-
-                    if (product.Stock < quantity)
-                        throw new InvalidOperationException($"Insufficient stock. Available: {product.Stock}");
-
-                    // تحديث المخزون
-                    product.Stock -= quantity;
-                    product.LastUpdated = DateTime.UtcNow;
-
-                    // حفظ التغييرات – قد يرمي DbUpdateConcurrencyException
-                    await _context.SaveChangesAsync();
-
-                    // معالجة الدفع
-                    var paymentResult = await _paymentGateway.ProcessPaymentAsync(product.Price * quantity, cardNumber);
-                    if (!paymentResult.Success)
-                        throw new InvalidOperationException("Payment failed.");
-
-                    // إنشاء الطلب
-                    var order = new Order
-                    {
-                        UserId = userId,
-                        OrderDate = DateTime.UtcNow,
-                        TotalAmount = product.Price * quantity,
-                        Status = OrderStatus.Paid,
-                        OrderItems = new List<OrderItem>
-                {
-                    new OrderItem { ProductId = productId, Quantity = quantity, UnitPrice = product.Price }
-                }
-                    };
-
-                    await _context.Orders.AddAsync(order);
-
-                    // تسجيل معاملة الدفع
-                    var paymentTransaction = new PaymentTransaction
-                    {
-                        Order = order,
-                        Amount = product.Price * quantity,
-                        GatewayReference = paymentResult.TransactionId,
-                        Status = PaymentStatus.Success,
-                        PaymentDate = DateTime.UtcNow
-                    };
-
-                    await _context.PaymentTransactions.AddAsync(paymentTransaction);
-                    await _context.SaveChangesAsync();
-
-                    await transaction.CommitAsync();
-
-                    _logger.LogInformation($"Order {order.Id} created successfully. Stock left: {product.Stock}");
-                    return order;
-                }
-                catch (DbUpdateConcurrencyException ex)
-                {
-                    await transaction.RollbackAsync();
-                    attempt++;
-                    _logger.LogWarning(ex, $"Concurrency conflict on attempt {attempt} for product {productId}");
-
-                    if (attempt >= maxRetries)
-                        throw new InvalidOperationException("Concurrency conflict. Please retry.");
-                    var staleProduct = await _context.Products.FindAsync(productId);
-                    if (staleProduct != null)
-                    {
-                        _context.Entry(staleProduct).State = EntityState.Detached;
-                    }
-                    await Task.Delay(10 * attempt);
-                }
-                catch (InvalidOperationException) 
-                {
-                    await transaction.RollbackAsync();
-                    throw;
-                }
-                catch
-                {
-                    await transaction.RollbackAsync();
-                    throw;
-                }
-            }
-
-            throw new InvalidOperationException("Concurrency conflict. Please retry.");
+            // استخدام Concurrency Manager للحد من التزامن على نفس المنتج
+            return await _concurrencyManager.ExecuteWithLimitAsync(
+                resourceKey: $"product_{productId}",
+                action: () => CreateOrderDirectCoreAsync(userId, productId, quantity, cardNumber),
+                maxConcurrency: 10  // يمكن تعديلها حسب المتطلبات
+            );
         }
-        public async Task<Order> CeateOrderDirectAsync(int userId, int productId, int quantity, string cardNumber)
+        private async Task<Order> CreateOrderDirectCoreAsync(int userId, int productId, int quantity, string cardNumber)
         {
-            if (quantity <= 0)
-                throw new InvalidOperationException("Quantity must be positive.");
+            await using var transaction = await _context.Database.BeginTransactionAsync();
 
-            const int maxRetries = 10;
-            int attempt = 0;
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+                throw new InvalidOperationException("Product not found.");
+            if (product.Stock < quantity)
+                throw new InvalidOperationException($"Insufficient stock. Available: {product.Stock}");
 
-            while (attempt < maxRetries)
+            // تحديث المخزون
+            product.Stock -= quantity;
+            product.LastUpdated = DateTime.UtcNow;
+
+            try
             {
-                // Start transaction on each attempt
-                await using var transaction = await _context.Database.BeginTransactionAsync();
+                // قد ترمي DbUpdateConcurrencyException إذا تغير المنتج بواسطة معاملة أخرى
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // إعادة تحميل الكيان بأحدث البيانات من قاعدة البيانات
+                await _context.Entry(product).ReloadAsync();
+                _context.Entry(product).State = EntityState.Detached;
 
-                try
-                {
-                    // Fetch product (done each attempt to get the latest RowVersion)
-                    var product = await _context.Products.FindAsync(productId);
-
-                    if (product == null)
-                        throw new InvalidOperationException("Product not found.");
-
-                    _logger.LogInformation($"Attempt {attempt + 1}: Current stock={product.Stock}, requested={quantity}, RowVersion={Convert.ToBase64String(product.RowVersion ?? Array.Empty<byte>())}");
-
-                    if (product.Stock < quantity)
-                        throw new InvalidOperationException($"Insufficient stock. Available: {product.Stock}");
-
-                    // Update stock
-                    product.Stock -= quantity;
-                    product.LastUpdated = DateTime.UtcNow;
-
-                    // May throw DbUpdateConcurrencyException if RowVersion has changed
-                    await _context.SaveChangesAsync();
-
-                    // Process payment (simulated)
-                    var paymentResult = await _paymentGateway.ProcessPaymentAsync(product.Price * quantity, cardNumber);
-                    if (!paymentResult.Success)
-                        throw new InvalidOperationException("Payment failed.");
-
-                    // Create order
-                    var order = new Order
-                    {
-                        UserId = userId,
-                        OrderDate = DateTime.UtcNow,
-                        TotalAmount = product.Price * quantity,
-                        Status = OrderStatus.Paid,
-                        OrderItems = new List<OrderItem>
-                {
-                    new OrderItem { ProductId = productId, Quantity = quantity, UnitPrice = product.Price }
-                }
-                    };
-
-                    await _context.Orders.AddAsync(order);
-
-                    // Record payment transaction
-                    var paymentTransaction = new PaymentTransaction
-                    {
-                        Order = order,
-                        Amount = product.Price * quantity,
-                        GatewayReference = Guid.NewGuid().ToString(),
-                        Status = PaymentStatus.Success,
-                        PaymentDate = DateTime.UtcNow
-                    };
-
-                    await _context.PaymentTransactions.AddAsync(paymentTransaction);
-                    await _context.SaveChangesAsync();
-
-                    await transaction.CommitAsync();
-
-                    _logger.LogInformation($" Attempt {attempt + 1} succeeded! Order {order.Id}, remaining stock={product.Stock}");
-
-                    return order;
-                }
-                catch (DbUpdateConcurrencyException ex)
-                {
-                    await transaction.RollbackAsync();
-                    attempt++;
-
-                    _logger.LogWarning(ex, $" Conflict on attempt {attempt}. Retrying...");
-
-                    if (attempt >= maxRetries)
-                        throw new InvalidOperationException("Concurrency conflict. Please retry.");
-
-                    // Short delay before retrying
-                    await Task.Delay(50 * attempt);
-                }
-                catch
-                {
-                    await transaction.RollbackAsync();
-                    throw;
-                }
+                // إعادة رمي الاستثناء لكي يقوم الـ Decorator بإعادة المحاولة
+                throw;
             }
 
-            throw new InvalidOperationException("Concurrency conflict. Please retry.");
+            // معالجة الدفع (لا نعيد المحاولة هنا؛ أي فشل في الدفع يعتبر خطأ نهائياً)
+            var paymentResult = await _paymentGateway.ProcessPaymentAsync(product.Price * quantity, cardNumber);
+            if (!paymentResult.Success)
+            {
+                await transaction.RollbackAsync();
+                throw new InvalidOperationException("Payment failed.");
+            }
 
-
+            // إنشاء الطلب
+            var order = new Order
+            {
+                UserId = userId,
+                OrderDate = DateTime.UtcNow,
+                TotalAmount = product.Price * quantity,
+                Status = OrderStatus.Paid,
+                OrderItems = new List<OrderItem>
+        {
+            new OrderItem { ProductId = productId, Quantity = quantity, UnitPrice = product.Price }
         }
-        //public async Task<Order> reateOrderDirectAsync(int userId, int productId, int quantity, string cardNumber)
+            };
+            await _context.Orders.AddAsync(order);
+
+            // تسجيل معاملة الدفع
+            var paymentTransaction = new PaymentTransaction
+            {
+                Order = order,
+                Amount = product.Price * quantity,
+                GatewayReference = paymentResult.TransactionId,
+                Status = PaymentStatus.Success,
+                PaymentDate = DateTime.UtcNow
+            };
+            await _context.PaymentTransactions.AddAsync(paymentTransaction);
+
+            // حفظ باقي الكيانات (Order, PaymentTransaction)
+            await _context.SaveChangesAsync();
+
+            // إتمام المعاملة
+            await transaction.CommitAsync();
+
+            return order;
+        }
+        //public async Task<Order> CrateOrderDirectAsync(int userId, int productId, int quantity, string cardNumber)
         //{
-        //    _logger.LogInformation($" Transaction committed for order  Stock should be decreased.");
-
-
-
         //    if (quantity <= 0)
         //        throw new InvalidOperationException("Quantity must be positive.");
 
-        //    const int maxRetries = 10;
+        //    const int maxRetries = 9;  
         //    int attempt = 0;
 
         //    while (attempt < maxRetries)
         //    {
         //        await using var transaction = await _context.Database.BeginTransactionAsync();
-
         //        try
         //        {
-        //            // جلب المنتج (في كل محاولة للحصول على أحدث RowVersion)
+        //            // جلب المنتج (سيتم تتبعه بواسطة ChangeTracker)
         //            var product = await _context.Products.FindAsync(productId);
         //            if (product == null)
         //                throw new InvalidOperationException("Product not found.");
@@ -284,9 +171,9 @@ namespace ECommerceBack.Infrastructure.Services
         //                TotalAmount = product.Price * quantity,
         //                Status = OrderStatus.Paid,
         //                OrderItems = new List<OrderItem>
-        //                {
-        //                    new OrderItem { ProductId = productId, Quantity = quantity, UnitPrice = product.Price }
-        //                }
+        //        {
+        //            new OrderItem { ProductId = productId, Quantity = quantity, UnitPrice = product.Price }
+        //        }
         //            };
 
         //            await _context.Orders.AddAsync(order);
@@ -305,11 +192,6 @@ namespace ECommerceBack.Infrastructure.Services
         //            await _context.SaveChangesAsync();
 
         //            await transaction.CommitAsync();
-        //            _logger.LogInformation($" Transaction committed for order {order.Id}. Stock should be decreased.");
-        //            // ===== المهام غير المتزامنة (Hangfire) =====
-        //            BackgroundJob.Enqueue<IBackgroundJobService>(x => x.SendOrderConfirmationEmailAsync(order.Id));
-        //            BackgroundJob.Enqueue<IBackgroundJobService>(x => x.GenerateInvoicePdfAsync(order.Id));
-        //            BackgroundJob.Schedule<IBackgroundJobService>(x => x.UpdateSalesStatisticsAsync(order.Id), TimeSpan.FromMinutes(5));
 
         //            _logger.LogInformation($"Order {order.Id} created successfully. Stock left: {product.Stock}");
         //            return order;
@@ -319,9 +201,20 @@ namespace ECommerceBack.Infrastructure.Services
         //            await transaction.RollbackAsync();
         //            attempt++;
         //            _logger.LogWarning(ex, $"Concurrency conflict on attempt {attempt} for product {productId}");
+
         //            if (attempt >= maxRetries)
         //                throw new InvalidOperationException("Concurrency conflict. Please retry.");
-        //            await Task.Delay(50 * ئ);
+        //            var staleProduct = await _context.Products.FindAsync(productId);
+        //            if (staleProduct != null)
+        //            {
+        //                _context.Entry(staleProduct).State = EntityState.Detached;
+        //            }
+        //            await Task.Delay(10 * attempt);
+        //        }
+        //        catch (InvalidOperationException) 
+        //        {
+        //            await transaction.RollbackAsync();
+        //            throw;
         //        }
         //        catch
         //        {
@@ -331,90 +224,88 @@ namespace ECommerceBack.Infrastructure.Services
         //    }
 
         //    throw new InvalidOperationException("Concurrency conflict. Please retry.");
+        //}        public async Task<Order> CreateOrderFromCartAsync(int userId, PaymentInfo paymentInfo)
+   
+        //{
+        //    var cart = await _cartRepository.GetCartWithItemsByUserIdAsync(userId);
+        //    if (cart == null || !cart.CartItems.Any())
+        //        throw new InvalidOperationException("Cart is empty");
+
+        //    await using var transaction = await _context.Database.BeginTransactionAsync();
+
+        //    try
+        //    {
+        //        // حساب الإجمالي والتحقق من المخزون
+        //        decimal totalAmount = 0;
+        //        foreach (var item in cart.CartItems)
+        //        {
+        //            var product = await _productRepository.GetByIdAsync(item.ProductId);
+        //            if (product == null || product.Stock < item.Quantity)
+        //                throw new InvalidOperationException($"Insufficient stock for product {item.ProductId}");
+        //            totalAmount += product.Price * item.Quantity;
+        //        }
+
+        //        // معالجة الدفع
+        //        var paymentResult = await _paymentGateway.ProcessPaymentAsync(totalAmount, paymentInfo.CardNumber);
+        //        if (!paymentResult.Success)
+        //            throw new InvalidOperationException("Payment failed.");
+
+        //        // إنشاء الطلب
+        //        var order = new Order
+        //        {
+        //            UserId = userId,
+        //            OrderDate = DateTime.UtcNow,
+        //            TotalAmount = totalAmount,
+        //            Status = OrderStatus.Paid,
+        //            OrderItems = cart.CartItems.Select(ci => new OrderItem
+        //            {
+        //                ProductId = ci.ProductId,
+        //                Quantity = ci.Quantity,
+        //                UnitPrice = ci.Product.Price
+        //            }).ToList()
+        //        };
+
+        //        await _context.Orders.AddAsync(order);
+
+        //        // تحديث المخزون
+        //        foreach (var item in cart.CartItems)
+        //        {
+        //            var product = await _productRepository.GetByIdAsync(item.ProductId);
+        //            product.Stock -= item.Quantity;
+        //            product.LastUpdated = DateTime.UtcNow;
+        //            await _productRepository.UpdateAsync(product);
+        //        }
+
+        //        // تسجيل معاملة الدفع
+        //        var paymentTransaction = new PaymentTransaction
+        //        {
+        //            Order = order,
+        //            Amount = totalAmount,
+        //            GatewayReference = paymentResult.TransactionId,
+        //            Status = PaymentStatus.Success,
+        //            PaymentDate = DateTime.UtcNow
+        //        };
+        //        await _context.PaymentTransactions.AddAsync(paymentTransaction);
+
+        //        // تفريغ السلة
+        //        cart.CartItems.Clear();
+        //        await _cartRepository.UpdateAsync(cart);
+
+        //        await _context.SaveChangesAsync();
+        //        await transaction.CommitAsync();
+
+        //        // مهام Hangfire الخلفية
+        //        BackgroundJob.Enqueue<IBackgroundJobService>(x => x.SendOrderConfirmationEmailAsync(order.Id));
+        //        BackgroundJob.Enqueue<IBackgroundJobService>(x => x.GenerateInvoicePdfAsync(order.Id));
+
+        //        return order;
+        //    }
+        //    catch
+        //    {
+        //        await transaction.RollbackAsync();
+        //        throw;
+        //    }
         //}
-
-        // إنشاء طلب من السلة (الطريقة القديمة - يمكن الاحتفاظ بها)
-        public async Task<Order> CreateOrderFromCartAsync(int userId, PaymentInfo paymentInfo)
-        {
-            var cart = await _cartRepository.GetCartWithItemsByUserIdAsync(userId);
-            if (cart == null || !cart.CartItems.Any())
-                throw new InvalidOperationException("Cart is empty");
-
-            await using var transaction = await _context.Database.BeginTransactionAsync();
-
-            try
-            {
-                // حساب الإجمالي والتحقق من المخزون
-                decimal totalAmount = 0;
-                foreach (var item in cart.CartItems)
-                {
-                    var product = await _productRepository.GetByIdAsync(item.ProductId);
-                    if (product == null || product.Stock < item.Quantity)
-                        throw new InvalidOperationException($"Insufficient stock for product {item.ProductId}");
-                    totalAmount += product.Price * item.Quantity;
-                }
-
-                // معالجة الدفع
-                var paymentResult = await _paymentGateway.ProcessPaymentAsync(totalAmount, paymentInfo.CardNumber);
-                if (!paymentResult.Success)
-                    throw new InvalidOperationException("Payment failed.");
-
-                // إنشاء الطلب
-                var order = new Order
-                {
-                    UserId = userId,
-                    OrderDate = DateTime.UtcNow,
-                    TotalAmount = totalAmount,
-                    Status = OrderStatus.Paid,
-                    OrderItems = cart.CartItems.Select(ci => new OrderItem
-                    {
-                        ProductId = ci.ProductId,
-                        Quantity = ci.Quantity,
-                        UnitPrice = ci.Product.Price
-                    }).ToList()
-                };
-
-                await _context.Orders.AddAsync(order);
-
-                // تحديث المخزون
-                foreach (var item in cart.CartItems)
-                {
-                    var product = await _productRepository.GetByIdAsync(item.ProductId);
-                    product.Stock -= item.Quantity;
-                    product.LastUpdated = DateTime.UtcNow;
-                    await _productRepository.UpdateAsync(product);
-                }
-
-                // تسجيل معاملة الدفع
-                var paymentTransaction = new PaymentTransaction
-                {
-                    Order = order,
-                    Amount = totalAmount,
-                    GatewayReference = paymentResult.TransactionId,
-                    Status = PaymentStatus.Success,
-                    PaymentDate = DateTime.UtcNow
-                };
-                await _context.PaymentTransactions.AddAsync(paymentTransaction);
-
-                // تفريغ السلة
-                cart.CartItems.Clear();
-                await _cartRepository.UpdateAsync(cart);
-
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
-
-                // مهام Hangfire الخلفية
-                BackgroundJob.Enqueue<IBackgroundJobService>(x => x.SendOrderConfirmationEmailAsync(order.Id));
-                BackgroundJob.Enqueue<IBackgroundJobService>(x => x.GenerateInvoicePdfAsync(order.Id));
-
-                return order;
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        }
 
         public async Task<IEnumerable<Order>> GetUserOrdersAsync(int userId)
         {

@@ -31,13 +31,13 @@ namespace ECommerceBack.Infrastructure.Decorators
         }
 
         /// <summary>إنشاء طلب من السلة مع تسجيل المعاملات.</summary>
-        public async Task<Order> CreateOrderFromCartAsync(int userId, PaymentInfo paymentInfo)
-        {
-            _logger.LogInformation("OrderService.CreateOrderFromCartAsync called (User:{UserId})", userId);
-            var result = await _inner.CreateOrderFromCartAsync(userId, paymentInfo);
-            _logger.LogInformation("OrderService.CreateOrderFromCartAsync completed (Order:{OrderId})", result.Id);
-            return result;
-        }
+        //public async Task<Order> CreateOrderFromCartAsync(int userId, PaymentInfo paymentInfo)
+        //{
+        //    _logger.LogInformation("OrderService.CreateOrderFromCartAsync called (User:{UserId})", userId);
+        //    //var result = await _inner.CreateOrderFromCartAsync(userId, paymentInfo);
+        //    _logger.LogInformation("OrderService.CreateOrderFromCartAsync completed (Order:{OrderId})", result.Id);
+        //    return result;
+        //}
 
         /// <summary>جلب قائمة طلبات المستخدم مع تسجيل عدد النتائج.</summary>
         public async Task<IEnumerable<Order>> GetUserOrdersAsync(int userId)
